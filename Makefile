@@ -1,7 +1,8 @@
 .PHONY: run
 run:
-	go build && ./api
+	go build && ./go-twi
 
 .PHONY: build for AWS lambda
 build:
-	GOOS=linux CGO_ENABLED=0 go build main.go && zip function.zip main
+	GOOS=linux CGO_ENABLED=0 go build && zip function.zip go-twi
+
