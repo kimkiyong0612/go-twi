@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"image"
 	_ "image/jpeg"
 	"image/png"
+	_ "image/png"
 	"os"
 	"path/filepath"
 
@@ -12,36 +14,25 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var (
+	assetsStore string = filepath.Join("images", "assets")
+	outputStore string = filepath.Join("images", "output")
+)
+
 func main() {
 
-	assetsStore := filepath.Join("images", "assets")
-	outputStore := filepath.Join("images", "output")
-
 	// open image file
-	bgImage, err := os.Open(filepath.Join(assetsStore, "example.jpeg"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer bgImage.Close()
-
-	gopherImage, err := os.Open(filepath.Join(assetsStore, "gopher.png"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer gopherImage.Close()
-
-	// image decoed
-	bg, _, err := image.Decode(bgImage)
-	if err != nil {
-		log.Fatal(err)
-	}
-	gopher, _, err := image.Decode(gopherImage)
+	bg, err := openAssetImage("example.jpeg")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// resize
-	// TODO: specify px
+	gopher, err := openAssetImage("gopher.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// resize by specifing px
 	dst := image.NewRGBA(image.Rect(0, 0, 500, 400))
 	draw.CatmullRom.Scale(dst, dst.Bounds(), bg, bg.Bounds(), draw.Over, nil)
 
@@ -51,7 +42,8 @@ func main() {
 	draw.Draw(dst, gopher.Bounds().Add(offset), gopher, image.ZP, draw.Over)
 
 	// create output file
-	pOutput, err := os.Create(filepath.Join(outputStore, "new.png"))
+	outputName := "new.png"
+	pOutput, err := os.Create(filepath.Join(outputStore, outputName))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -63,4 +55,16 @@ func main() {
 		log.Fatal(err)
 	}
 
+	fmt.Printf("\nSUCCESS: LOOK %s\n", outputName)
+}
+
+func openAssetImage(filename string) (image.Image, error) {
+	f, err := os.Open(filepath.Join(assetsStore, filename))
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	i, _, err := image.Decode(f)
+	return i, err
 }
