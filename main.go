@@ -31,6 +31,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	_ = gopher
 
 	// resize by specifing px
 	dst := image.NewRGBA(image.Rect(0, 0, 500, 400))
@@ -38,8 +39,8 @@ func main() {
 
 	// compose
 	offset := image.Pt(bg.Bounds().Dx()/6, bg.Bounds().Dy()/4)
-	draw.Draw(dst, dst.Bounds(), bg, image.ZP, draw.Src)
-	draw.Draw(dst, gopher.Bounds().Add(offset), gopher, image.ZP, draw.Over)
+	// draw.Draw(dst, dst.Bounds(), bg, image.ZP, draw.Src)
+	draw.Draw(dst, gopher.Bounds().Add(offset), gopher, image.Point{0, 0}, draw.Over)
 
 	// create output file
 	outputName := "new.png"
