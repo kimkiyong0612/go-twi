@@ -38,9 +38,9 @@ func main() {
 	// draw.CatmullRom.Scale(dst, dst.Bounds(), bg, bg.Bounds(), draw.Over, nil)
 
 	// crop preserving the aspect ratio
-	// src := imaging.CropAnchor(gopher, 50, 100, imaging.Center)
-	// output is 100*100
-	src := imaging.Resize(gopher, 100, 50, imaging.Lanczos)
+	src := gopher
+	src = imaging.Resize(gopher, 500, 0, imaging.Lanczos)
+	src = imaging.CropAnchor(src, 500, 250, imaging.Center)
 
 	// compose
 	// offset := image.Pt(bg.Bounds().Dx()/6, bg.Bounds().Dy()/4)
