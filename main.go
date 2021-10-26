@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"image"
 	_ "image/jpeg"
 	"image/png"
 	_ "image/png"
@@ -21,7 +20,7 @@ var (
 func main() {
 
 	// open image file (860*574)
-	bg, err := imaging.Open(filepath.Join(assetsStore, "example.jpeg"))
+	bg, err := imaging.Open(filepath.Join(assetsStore, "images.jpeg"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,9 +37,10 @@ func main() {
 	// draw.CatmullRom.Scale(dst, dst.Bounds(), bg, bg.Bounds(), draw.Over, nil)
 
 	// crop preserving the aspect ratio
-	src := gopher
-	src = imaging.Resize(gopher, 500, 0, imaging.Lanczos)
-	src = imaging.CropAnchor(src, 500, 250, imaging.Center)
+	src := bg
+	// src = imaging.Resize(gopher, 500, 0, imaging.Lanczos)
+	// src = imaging.CropAnchor(src, 500, 250, imaging.Center)
+	src = imaging.Thumbnail(src, 50, 50, imaging.Lanczos)
 
 	// compose
 	// offset := image.Pt(bg.Bounds().Dx()/6, bg.Bounds().Dy()/4)
@@ -62,15 +62,4 @@ func main() {
 	}
 
 	fmt.Printf("\nSUCCESS: LOOK %s\n", outputName)
-}
-
-func openAssetImage(filename string) (image.Image, error) {
-	f, err := os.Open(filepath.Join(assetsStore, filename))
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	i, _, err := image.Decode(f)
-	return i, err
 }
